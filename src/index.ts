@@ -25,8 +25,11 @@ async function getFiles(dirPath: string, result: string[] = []) {
     for (const file of files) {
       const filePath = path.join(dirPath, file.name);
       if (file.isDirectory()) {
-        await getFiles(filePath, result);
-      } else if (!/\.css$/.test(filePath)) {
+        console.log(file.name);
+        if (file.name !== 'favicon.ico' && file.name !== 'chunks') {
+          return getFiles(filePath);
+        }
+      } else if (!/\.(css|json)$/.test(filePath)) {
         result.push(filePath);
       }
     }
@@ -159,7 +162,10 @@ const plugin = (opt: any = {}) => {
           }
 
           if (!directory && !type) return;
-          let directoryPath = path.join(process.cwd(), directory || (type === 'nextjs' ? '.next' : 'src'));
+          let directoryPath = path.join(
+            process.cwd(),
+            directory || (type === 'nextjs' ? '.next/server' : 'src')
+          );
           // Replace the class name here.
           if (fs.existsSync(directoryPath)) {
             let files = await getFiles(directoryPath);

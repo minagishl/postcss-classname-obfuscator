@@ -2,6 +2,12 @@
 
 All changes to this project will be noted here.
 
+## [1.0.2] - 2024-01-20
+
+### Changed
+
+- Added filtering of unwanted files
+
 ## [1.0.1] - 2024-01-20
 
 ### Revision
@@ -30,4 +36,6 @@ Optional features for this plug-in have been added
 - First release
 
 [0.1.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/0.1.0
-[0.1.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.0
+[1.0.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.0
+[1.0.1]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.1
+[1.0.2]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.2
