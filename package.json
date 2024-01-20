@@ -1,6 +1,6 @@
 {
   "name": "postcss-classname-obfuscator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "This PostCSS plugin replaces CSS class names with hard-to-guess characters.",
   "keywords": [
     "postcss",
