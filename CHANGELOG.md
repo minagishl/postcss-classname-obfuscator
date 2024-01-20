@@ -2,6 +2,14 @@
 
 All changes to this project will be noted here.
 
+## [1.0.1] - 2024-01-20
+
+### Revision
+
+- Fixed a problem that prevented the plugin from working properly
+
+  (If it works correctly again, update the version to v1.1.0.)
+
 ## [1.0.0] - 2024-01-20
 
 ### Added

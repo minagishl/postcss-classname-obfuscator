@@ -147,7 +147,7 @@ const plugin = (opt: any = {}) => {
 
       // Compile regular expressions outside of the loop
       const regexes = Object.keys(mapping).map((original) => ({
-        regex: new RegExp(`\\.${original}`, 'g'),
+        regex: new RegExp(`(?<=['"\\s])${original.slice(1)}(?=['"\\s])`, 'g'),
         hash: mapping[original as keyof typeof mapping],
       }));
 
@@ -155,7 +155,7 @@ const plugin = (opt: any = {}) => {
       root.walkRules(async (rule: any) => {
         for (const { regex, hash } of regexes) {
           if (regex.test(rule.selector)) {
-            rule.selector = rule.selector.replace(regex, `.${hash}`);
+            rule.selector = rule.selector.replace(regex, hash.slice(1));
           }
 
           if (!directory && !type) return;
