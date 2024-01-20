@@ -11,13 +11,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run minify",
     "minify": "terser dist/index.js --mangle -o dist/index.js",
     "dev": "swc src -d dist",
     "unit": "npm run dev && node --test index.test.js",
     "test": "npm run unit && eslint ./dist",
-    "format": "prettier --write 'src/**/*.ts'",
-    "prepublish": "npm run build && npm run minify"
+    "format": "prettier --write 'src/**/*.ts'"
   },
   "author": "minagishl",
   "license": "MIT",
