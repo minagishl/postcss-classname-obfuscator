@@ -1,6 +1,6 @@
 # postcss-classname-obfuscator
 
-> This package is currently in the prototype stage.
+> This package is currently in the prototype stage.<br>
 > We do not recommend downloading this package due to defects.
 
 This PostCSS plugin replaces CSS class names with hard-to-guess characters.
