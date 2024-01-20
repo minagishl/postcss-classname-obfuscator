@@ -5,3 +5,4 @@ yarn-error.log
 coverage/
 dist/
 test/output.css
+.DS_Store

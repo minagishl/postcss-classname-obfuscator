@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 type Options = {
+  type?: string;
   enable?: boolean;
   length?: number;
   method?: string;
@@ -11,11 +12,30 @@ type Options = {
   ignore?: string[];
   output?: string;
   inspect?: boolean; // No description in readme.md
+  directory?: string;
   ignoreRegex?: string[];
   hashAlgorithm?: string;
   preRun?: () => Promise<void>;
   callback?: () => void;
 };
+
+async function getFiles(dirPath: string, result: string[] = []) {
+  try {
+    const files = await fs.promises.readdir(dirPath, { withFileTypes: true });
+    for (const file of files) {
+      const filePath = path.join(dirPath, file.name);
+      if (file.isDirectory()) {
+        await getFiles(filePath, result);
+      } else if (!/\.css$/.test(filePath)) {
+        result.push(filePath);
+      }
+    }
+    return result;
+  } catch (err: any) {
+    console.error(err);
+    return [];
+  }
+}
 
 const plugin = (opt: any = {}) => {
   return {
@@ -25,6 +45,7 @@ const plugin = (opt: any = {}) => {
       const options: Options = opt;
 
       // Options
+      const type = options.type || '';
       const enable = options.enable !== undefined ? options.enable : true;
       const length = options.length || 6;
       const method = options.method || 'random';
@@ -33,6 +54,7 @@ const plugin = (opt: any = {}) => {
       const ignore = options.ignore || [];
       const output = options.output || '';
       const inspect = options.inspect || false;
+      const directory = options.directory || '';
       const ignoreRegex = options.ignoreRegex || [];
       const hashAlgorithm = options.hashAlgorithm || 'sha256';
       const preRun = options.preRun || (() => Promise.resolve());
@@ -130,10 +152,41 @@ const plugin = (opt: any = {}) => {
       }));
 
       // Second pass: replace class names
-      root.walkRules((rule: any) => {
+      root.walkRules(async (rule: any) => {
         for (const { regex, hash } of regexes) {
           if (regex.test(rule.selector)) {
             rule.selector = rule.selector.replace(regex, `.${hash}`);
+          }
+
+          if (!directory && !type) return;
+          let directoryPath = path.join(process.cwd(), directory || (type === 'nextjs' ? '.next' : 'src'));
+          // Replace the class name here.
+          if (fs.existsSync(directoryPath)) {
+            let files = await getFiles(directoryPath);
+
+            // inspect
+            if (inspect) {
+              console.log(files);
+            }
+
+            files.forEach((file) => {
+              let content = fs.readFileSync(file, 'utf8');
+
+              for (const { regex, hash } of regexes) {
+                // inspect
+                if (inspect) {
+                  console.log(content, regex, hash);
+                }
+
+                // Remove the dot from the hash.
+                const newHash = hash.startsWith('.') ? hash.slice(1) : hash;
+                // Replace the dot from the regex.
+                const newRegex = new RegExp(regex.source.replace('\\..', ''), 'g');
+                content = content.replace(newRegex, newHash);
+              }
+
+              fs.writeFileSync(file, content, 'utf8');
+            });
           }
         }
       });

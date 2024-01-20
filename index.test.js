@@ -11,6 +11,8 @@ const options = {
   length: 6,
   method: 'random',
   hashAlgorithm: 'sha512',
+  // type: 'nextjs',
+  directory: 'test',
 };
 
 async function run(input, opts = {}, type) {
@@ -30,18 +32,18 @@ test('does something', async () => {
   await run(inputCss, options);
 });
 
-test('speed test', async () => {
-  const iterations = 20;
-  let totalTime = 0;
+// test('speed test', async () => {
+//   const iterations = 20;
+//   let totalTime = 0;
 
-  for (let i = 0; i < iterations; i++) {
-    const startTime = Date.now();
-    await run(inputCss, options, 'test');
-    const endTime = Date.now();
-    const elapsedTime = endTime - startTime;
-    totalTime += elapsedTime;
-  }
+//   for (let i = 0; i < iterations; i++) {
+//     const startTime = Date.now();
+//     await run(inputCss, options, 'test');
+//     const endTime = Date.now();
+//     const elapsedTime = endTime - startTime;
+//     totalTime += elapsedTime;
+//   }
 
-  const averageTime = (totalTime / iterations).toFixed(2);
-  console.log(`Average time taken: ${averageTime}ms\n`);
-});
+//   const averageTime = (totalTime / iterations).toFixed(2);
+//   console.log(`Average time taken: ${averageTime}ms\n`);
+// });

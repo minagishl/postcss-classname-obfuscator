@@ -53,19 +53,21 @@ module.exports = {
 
 ## Options
 
-| Option        | Type                | Default                 | Description                                                    |
-| ------------- | ------------------- | ----------------------- | -------------------------------------------------------------- |
-| enable        | boolean             | true                    | Enable or disable the obfuscation.                             |
-| length        | number              | 6                       | Character length (max. 32 characters)length.                   |
-| method        | string              | "random"                | "random" or "none" obfuscation method for classes.             |
-| prefix        | string              | ""                      | Prefix for custom properties.                                  |
-| suffix        | string              | ""                      | Suffix for custom properties.                                  |
-| ignore        | string[]            | []                      | Array of custom properties to ignore.                          |
-| output        | string              | ""                      | Obfuscated property list json file output destination          |
-| ignoreRegex   | string[]            | []                      | Regex to ignore.                                               |
-| hashAlgorithm | string              | "sha256"                | Hash algorithm for obfuscation.                                |
-| preRun        | () => Promise<void> | () => Promise.resolve() | What to do before running the plugin                           |
-| callBack      | () => void          | function () {}          | Callback function to run after the plugin has finished running |
+| Option          | Type                | Default                 | Description                                                           |
+| --------------- | ------------------- | ----------------------- | --------------------------------------------------------------------- |
+| [new] type      | string              | ""                      | "nextjs" - Application-specific directories Only supported by Next.js |
+| enable          | boolean             | true                    | Enable or disable the obfuscation.                                    |
+| length          | number              | 6                       | Character length (max. 32 characters)length.                          |
+| method          | string              | "random"                | "random" or "none" obfuscation method for classes.                    |
+| prefix          | string              | ""                      | Prefix for custom properties.                                         |
+| suffix          | string              | ""                      | Suffix for custom properties.                                         |
+| ignore          | string[]            | []                      | Array of custom properties to ignore.                                 |
+| output          | string              | ""                      | Obfuscated property list json file output destination                 |
+| [new] directory | string              | ""                      | Directory to replace obfuscated class names                           |
+| ignoreRegex     | string[]            | []                      | Regex to ignore.                                                      |
+| hashAlgorithm   | string              | "sha256"                | Hash algorithm for obfuscation.                                       |
+| preRun          | () => Promise<void> | () => Promise.resolve() | What to do before running the plugin                                  |
+| callBack        | () => void          | function () {}          | Callback function to run after the plugin has finished running        |
 
 ## License
 
