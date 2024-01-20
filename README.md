@@ -44,10 +44,10 @@ and set this plugin in settings.
 
 ```diff
 module.exports = {
-	plugins: {
-		autoprefixer: {},
-+		'postcss-classname-obfuscator': {},
-	},
+  plugins: {
+    autoprefixer: {},
++   'postcss-classname-obfuscator': {},
+  },
 };
 ```
 
