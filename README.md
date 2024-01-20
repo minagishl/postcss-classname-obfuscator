@@ -1,5 +1,8 @@
 # postcss-classname-obfuscator
 
+> This package is currently in the prototype stage.
+> We do not recommend downloading this package due to defects.
+
 This PostCSS plugin replaces CSS class names with hard-to-guess characters.
 
 ```css
@@ -42,8 +45,8 @@ and set this plugin in settings.
 ```diff
 module.exports = {
 	plugins: {
-+   'postcss-classname-obfuscator': {},
-		autoprefixer: {}
+		autoprefixer: {},
++		'postcss-classname-obfuscator': {},
 	},
 };
 ```
