@@ -149,7 +149,7 @@ const plugin = (opt: any = {}) => {
 
       // Compile regular expressions outside of the loop
       const regexes = Object.keys(mapping).map((original) => ({
-        regex: new RegExp(`(?<=class=['"]|className: ['"])${original.slice(1)}(?=['"\\s])`, 'g'),
+        regex: new RegExp(`(?<=class=['"]|className:\s*['"])${original.slice(1)}(?=['"\\s])`, 'g'),
         hash: mapping[original as keyof typeof mapping],
       }));
 
