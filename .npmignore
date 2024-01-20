@@ -1,0 +1,15 @@
+yarn-error.log
+npm-debug.log
+package-lock.json
+yarn.lock
+
+.vscode
+*.test.js
+.github
+.editorconfig
+coverage/
+.swcrc
+.prettierrc
+tsconfig.json
+src/
+test/
