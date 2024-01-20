@@ -25,7 +25,6 @@ async function getFiles(dirPath: string, result: string[] = []) {
     for (const file of files) {
       const filePath = path.join(dirPath, file.name);
       if (file.isDirectory()) {
-        console.log(file.name);
         if (file.name !== 'favicon.ico' && file.name !== 'chunks') {
           return getFiles(filePath);
         }

@@ -1,6 +1,6 @@
 {
   "name": "postcss-classname-obfuscator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This PostCSS plugin replaces CSS class names with hard-to-guess characters.",
   "keywords": [
     "postcss",
@@ -17,7 +17,7 @@
     "unit": "npm run dev && node --test index.test.js",
     "test": "npm run unit && eslint ./dist",
     "format": "prettier --write 'src/**/*.ts'",
-    "publish": "npm run build && npm run minify && npm publish"
+    "prepublish": "npm run build && npm run minify"
   },
   "author": "minagishl",
   "license": "MIT",
