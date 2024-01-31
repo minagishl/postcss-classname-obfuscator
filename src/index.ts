@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import getFiles from './utils/getFiles';
 import createHash from './utils/createHash';
 import replaceSymbolicCharacter from './utils/replaceSymbolicCharacter';
 import reverseReplaceSymbolicCharacter from './utils/reverseReplaceSymbolicCharacter';
@@ -17,6 +18,7 @@ type Options = {
   directory?: string;
   ignoreRegex?: string[];
   hashAlgorithm?: string;
+  outputBuildID?: boolean; // No description in readme.md
   inspectDirectory?: inspectDirectory;
   preRun?: () => Promise<void>;
   callback?: () => void;
@@ -27,40 +29,15 @@ type inspectDirectory = {
   output: string;
 };
 
-const key = new Date().getTime().toString();
-
-async function getFiles(dirPath: string, result: string[] = []) {
-  try {
-    const files = await fs.promises.readdir(dirPath, { withFileTypes: true });
-    for (const file of files) {
-      const filePath = path.join(dirPath, file.name);
-      if (file.isDirectory()) {
-        if (file.name !== 'favicon.ico' && file.name !== 'chunks') {
-          return getFiles(filePath);
-        }
-      } else if (!/\.(css|json)$/.test(filePath) && !filePath.includes('output')) {
-        result.push(filePath);
-      }
-    }
-    return result;
-  } catch (err: any) {
-    console.error(err);
-    return [];
-  }
-}
-
-function replaceClass(regex: RegExp, str: string, hash: string) {
-  // Change to hash value with new regular expression and replaced content
-  const replacedStr = str.replace(regex, (_match, p1, p2, _p3, p4) => {
-    return p1 + p2 + hash + p4;
-  });
-
-  return replacedStr;
-}
+const pluginName = 'postcss-classname-obfuscator';
+const key = new Date()
+  .getTime()
+  .toString()
+  .slice(0, Math.ceil(new Date().getTime().toString().length / 2));
 
 const plugin = (opt: any = {}) => {
   return {
-    postcssPlugin: 'postcss-classname-obfuscator',
+    postcssPlugin: pluginName,
     async Once(root: any) {
       const mapping: { [key: string]: string } = {};
       const options: Options = opt;
@@ -78,6 +55,7 @@ const plugin = (opt: any = {}) => {
       const directory = options.directory || '';
       const ignoreRegex = options.ignoreRegex || [];
       const hashAlgorithm = options.hashAlgorithm || 'sha256';
+      const outputBuildID = options.outputBuildID || false;
       const inspectDirectory = options.inspectDirectory || { input: '', output: '' };
       const preRun = options.preRun || (() => Promise.resolve());
       const callback = options.callback || function () {};
@@ -167,7 +145,7 @@ const plugin = (opt: any = {}) => {
 
       const regexeshtml = Object.keys(mapping).map((original) => ({
         regex: new RegExp(
-          `(class=|className:\\s)(['"]|['"].*\\s)(\\b${replaceSymbolicCharacter(original.slice(1), key)}\\b)(\\s.*['"]|['"])`,
+          `(class=|className:\\s*)(['"]|['"].*\\s)(${replaceSymbolicCharacter(original.slice(1), key)})(\\s.*['"]|['"])`,
           'g'
         ),
         hash: mapping[original as keyof typeof mapping],
@@ -195,7 +173,7 @@ const plugin = (opt: any = {}) => {
       // Replace the class name here.
       if (fs.existsSync(directoryPath)) {
         await new Promise((resolve) => {
-          setTimeout(resolve, 5000);
+          setTimeout(resolve, 2000); // Error Countermeasures
         });
 
         let files = await getFiles(directoryPath);
@@ -206,7 +184,6 @@ const plugin = (opt: any = {}) => {
         }
 
         files.forEach((file) => {
-          console.log(file);
           try {
             // regular expression
             let content = fs.readFileSync(file, 'utf8');
@@ -218,28 +195,53 @@ const plugin = (opt: any = {}) => {
             let newContent = content;
 
             for (const { regex, hash } of regexeshtml) {
+              // Remove the "." from the class name.
+              const newHash = hash.slice(1);
+
               // inspect
               if (inspect) {
-                console.log(newContent, regex, hash);
+                console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
               }
 
-              newContent = replaceClass(regex, newContent, hash.slice(1));
+              console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
+
+              newContent = newContent.replace(regex, (_match, p1, p2, _p3, p4) => {
+                return p1 + p2 + newHash + p4;
+              });
             }
 
-            newContent = reverseReplaceSymbolicCharacter(newContent, key);
+            newContent = newContent.replace(contentRegex, (_match, p1, p2, p3) => {
+              return (p1 + reverseReplaceSymbolicCharacter(p2, key) + p3).replace('s*', '\\s*');
+            });
 
             if (inspectFileMode) {
               const outputFileName = 'output-' + path.basename(file);
               const outputPath = path.join(path.dirname(file), outputFileName);
               fs.writeFileSync(outputPath, newContent, 'utf8');
             } else {
-              fs.writeFileSync(file, newContent, 'utf8');
+              fs.writeFile(file, newContent, 'utf8', (err) => {
+                if (err) throw err;
+              });
             }
           } catch (error) {
             console.error(`Error processing file: ${file}`);
             console.error(error);
           }
         });
+
+        // inspect
+        if (outputBuildID) {
+          const buildID = path.join(process.cwd(), '/BUILD_ID');
+          const dir = path.dirname(buildID);
+
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+          }
+
+          fs.writeFile(buildID, JSON.stringify({ name: pluginName, id: key }), (err) => {
+            if (err) throw err;
+          });
+        }
       }
 
       if (inspect) {

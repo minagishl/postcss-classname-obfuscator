@@ -2,6 +2,10 @@
 
 All changes to this project will be noted here.
 
+## [1.0.7] - 2024-01-31
+
+If you don't have many class names, you can probably run it.
+
 ## [1.0.6] - 2024-01-20
 
 Bug fixes (nothing to write home about)
