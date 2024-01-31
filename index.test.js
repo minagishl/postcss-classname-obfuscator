@@ -12,7 +12,8 @@ const options = {
   method: 'random',
   hashAlgorithm: 'sha512',
   // type: 'nextjs',
-  directory: 'test',
+  // directory: 'test',
+  inspectDirectory: { input: 'test', output: 'test' },
 };
 
 async function run(input, opts = {}, type) {

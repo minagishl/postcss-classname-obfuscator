@@ -98,6 +98,32 @@
   --custom: 0 0% 100%;
 }
 
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.block {
+  display: block;
+}
+
+.hover:flex {
+  display: flex;
+}
+
 *,
 ::after,
 ::before {

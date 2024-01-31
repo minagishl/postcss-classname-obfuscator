@@ -1,8 +1,5 @@
 # postcss-classname-obfuscator
 
-> This package is currently in the prototype stage.<br>
-> We do not recommend downloading this package due to defects.
-
 This PostCSS plugin replaces CSS class names with hard-to-guess characters.
 
 ```css
@@ -55,7 +52,7 @@ module.exports = {
 
 | Option          | Type                | Default                 | Description                                                           |
 | --------------- | ------------------- | ----------------------- | --------------------------------------------------------------------- |
-| [new] type      | string              | ""                      | "nextjs" - Application-specific directories Only supported by Next.js |
+| [new] type      | string              | "nextjs"                | "nextjs" - Application-specific directories Only supported by Next.js |
 | enable          | boolean             | true                    | Enable or disable the obfuscation.                                    |
 | length          | number              | 6                       | Character length (max. 32 characters)length.                          |
 | method          | string              | "random"                | "random" or "none" obfuscation method for classes.                    |
