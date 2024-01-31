@@ -203,7 +203,7 @@ const plugin = (opt: any = {}) => {
                 console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
               }
 
-              console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
+              // console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
 
               newContent = newContent.replace(regex, (_match, p1, p2, _p3, p4) => {
                 return p1 + p2 + newHash + p4;

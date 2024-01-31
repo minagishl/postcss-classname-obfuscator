@@ -2,6 +2,10 @@
 
 All changes to this project will be noted here.
 
+## [1.0.8] - 2024-01-31
+
+Forgot to delete console.log for development
+
 ## [1.0.7] - 2024-01-31
 
 If you don't have many class names, you can probably run it.
