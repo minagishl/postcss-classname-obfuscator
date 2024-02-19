@@ -4,6 +4,7 @@ import getFiles from './utils/getFiles';
 import createHash from './utils/createHash';
 import replaceSymbolicCharacter from './utils/replaceSymbolicCharacter';
 import reverseReplaceSymbolicCharacter from './utils/reverseReplaceSymbolicCharacter';
+import removePseudoClasses from './utils/removePseudoClasses';
 
 type Options = {
   type?: string;
@@ -29,11 +30,13 @@ type inspectDirectory = {
   output: string;
 };
 
+type Regexeshtml = {
+  regex: RegExp;
+  hash: string;
+};
+
 const pluginName = 'postcss-classname-obfuscator';
-const key = new Date()
-  .getTime()
-  .toString()
-  .slice(0, Math.ceil(new Date().getTime().toString().length / 2));
+const key = createHash('sha256', pluginName, 5); // 5 characters
 
 const plugin = (opt: any = {}) => {
   return {
@@ -41,6 +44,7 @@ const plugin = (opt: any = {}) => {
     async Once(root: any) {
       const mapping: { [key: string]: string } = {};
       const options: Options = opt;
+      const maxLength: number = 16;
 
       // Options
       const type = options.type || 'nextjs';
@@ -61,17 +65,9 @@ const plugin = (opt: any = {}) => {
       const callback = options.callback || function () {};
 
       // Validate options
-      if (length > 32) {
+      if (length > maxLength) {
         // Because it may not work correctly
-        throw new Error('Length must be less than or equal to 32');
-      }
-
-      const validHashAlgorithms = ['md5', 'sha1', 'sha256', 'sha512'];
-
-      if (!validHashAlgorithms.includes(hashAlgorithm)) {
-        throw new Error(
-          `Invalid hashAlgorithm: ${hashAlgorithm}. Must be one of ${validHashAlgorithms.join(', ')}`
-        );
+        throw new Error(`Length must be less than or equal to ${maxLength}`);
       }
 
       // Add '.' to ignore list
@@ -143,13 +139,17 @@ const plugin = (opt: any = {}) => {
         hash: mapping[original as keyof typeof mapping],
       }));
 
-      const regexeshtml = Object.keys(mapping).map((original) => ({
-        regex: new RegExp(
-          `(class=|className:\\s*)(['"]|['"].*\\s)(${replaceSymbolicCharacter(original.slice(1), key)})(\\s.*['"]|['"])`,
-          'g'
-        ),
-        hash: mapping[original as keyof typeof mapping],
-      }));
+      const regexeshtml = Object.keys(mapping).map((original) => {
+        let str = original.slice(1).replace(/::after|::before/g, '');
+        str = removePseudoClasses(str);
+        return {
+          regex: new RegExp(
+            `(class=|className:\\s*)(['"]|[^,]+\\s)(${replaceSymbolicCharacter(str, key)})(\\s[^,]+|['"])`,
+            'g'
+          ),
+          hash: mapping[original as keyof typeof mapping].replace(/::after|::before/g, ''),
+        };
+      }) as Regexeshtml[];
 
       // Second pass: replace class names
       root.walkRules(async (rule: any) => {
@@ -173,7 +173,7 @@ const plugin = (opt: any = {}) => {
       // Replace the class name here.
       if (fs.existsSync(directoryPath)) {
         await new Promise((resolve) => {
-          setTimeout(resolve, 2000); // Error Countermeasures
+          setTimeout(resolve, 500); // Error Countermeasures
         });
 
         let files = await getFiles(directoryPath);
@@ -203,7 +203,7 @@ const plugin = (opt: any = {}) => {
                 console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
               }
 
-              // console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
+              console.log(regex, newHash + `\n\n${'-'.repeat(40)}\n`);
 
               newContent = newContent.replace(regex, (_match, p1, p2, _p3, p4) => {
                 return p1 + p2 + newHash + p4;

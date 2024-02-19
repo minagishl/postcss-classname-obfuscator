@@ -11,12 +11,19 @@ function getRandomInt(max: number) {
 
 /**
  * Creates a hash using the specified algorithm, input string, and desired length.
- * @param algo The algorithm to use for hashing. Defaults to 'sha256' if not provided.
- * @param str The input string to be hashed.
- * @param length The desired length of the hash.
+ * @param algo - The hash algorithm to use (e.g., 'md5', 'sha1', 'sha256', 'sha512').
+ * @param str - The input string to hash.
+ * @param length - The desired length of the hash.
  * @returns The generated hash string.
+ * @throws Error if the specified hash algorithm is invalid.
  */
 export default function createHash(algo: string, str: string, length: number): string {
+  const validHashAlgorithms = ['md5', 'sha1', 'sha256', 'sha512'];
+
+  if (!validHashAlgorithms.includes(algo)) {
+    throw new Error(`Invalid hashAlgorithm: ${algo}. Must be one of ${validHashAlgorithms.join(', ')}`);
+  }
+
   return crypto
     .createHash(algo || 'sha256')
     .update(str + getRandomInt(100))
