@@ -4,36 +4,8 @@ import getFiles from './utils/getFiles';
 import createHash from './utils/createHash';
 import replaceSymbolicCharacter from './utils/replaceSymbolicCharacter';
 import reverseReplaceSymbolicCharacter from './utils/reverseReplaceSymbolicCharacter';
-import removePseudoClasses from './utils/removePseudoClasses';
-
-type Options = {
-  type?: string;
-  enable?: boolean;
-  length?: number;
-  method?: string;
-  prefix?: string;
-  suffix?: string;
-  ignore?: string[];
-  output?: string;
-  inspect?: boolean; // No description in readme.md
-  directory?: string;
-  ignoreRegex?: string[];
-  hashAlgorithm?: string;
-  outputBuildID?: boolean; // No description in readme.md
-  inspectDirectory?: inspectDirectory;
-  preRun?: () => Promise<void>;
-  callback?: () => void;
-};
-
-type inspectDirectory = {
-  input: string;
-  output: string;
-};
-
-type Regexeshtml = {
-  regex: RegExp;
-  hash: string;
-};
+import { removePseudoClasses, addPseudoClasses } from './utils/pseudoClasses';
+import { Options, Regexeshtml } from './types';
 
 const pluginName = 'postcss-classname-obfuscator';
 const key = createHash('sha256', pluginName, 5); // 5 characters
@@ -42,6 +14,7 @@ const plugin = (opt: any = {}) => {
   return {
     postcssPlugin: pluginName,
     async Once(root: any) {
+      // mapping contains classes for css
       const mapping: { [key: string]: string } = {};
       const options: Options = opt;
       const maxLength: number = 16;
@@ -95,13 +68,18 @@ const plugin = (opt: any = {}) => {
           if (method === 'random') {
             if (!Object.prototype.hasOwnProperty.call(mapping, rule.selector)) {
               let hash;
+
               do {
                 hash = createHash(hashAlgorithm, rule.selector, hashLength);
               } while (Object.values(mapping).includes(`.${prefix + hash + suffix}`) || /^\d/.test(hash));
 
-              // Check if the selector has pseudo-elements or universal selector
-              const pseudoElements = rule.selector.match(/::after|::before|\*/g) || [];
+              const pseudoElements = addPseudoClasses(rule.selector);
               mapping[rule.selector] = `.${prefix + hash + suffix}${pseudoElements.join('')}`;
+
+              // For development confirmation
+              if (inspect) {
+                console.log(`[${pluginName}] ${rule.selector} -> ${mapping[rule.selector]}`);
+              }
             }
           } else {
             mapping[rule.selector] = '.' + prefix + rule.selector.substring(2) + suffix;
@@ -135,7 +113,7 @@ const plugin = (opt: any = {}) => {
 
       // Compile regular expressions outside of the loop
       const regexes = Object.keys(mapping).map((original) => ({
-        regex: new RegExp(`.${original}`, 'g'),
+        regex: new RegExp(`${original}`, 'g'),
         hash: mapping[original as keyof typeof mapping],
       }));
 
@@ -147,7 +125,8 @@ const plugin = (opt: any = {}) => {
             `(class=|className:\\s*)(['"]|[^,]+\\s)(${replaceSymbolicCharacter(str, key)})(\\s[^,]+|['"])`,
             'g'
           ),
-          hash: mapping[original as keyof typeof mapping].replace(/::after|::before/g, ''),
+          hashForCss: mapping[original as keyof typeof mapping],
+          hashForHTML: removePseudoClasses(mapping[original as keyof typeof mapping].slice(1)),
         };
       }) as Regexeshtml[];
 
@@ -194,19 +173,13 @@ const plugin = (opt: any = {}) => {
 
             let newContent = content;
 
-            for (const { regex, hash } of regexeshtml) {
-              // Remove the "." from the class name.
-              const newHash = hash.slice(1);
-
-              // inspect
-              if (inspect) {
-                console.log(newContent, regex, newHash + `\n\n${'-'.repeat(40)}\n`);
+            for (const { regex, hashForHTML } of regexeshtml) {
+              if (String(regex).includes('before!')) {
+                console.log(newContent, regex, hashForHTML + `\n\n${'-'.repeat(40)}\n`);
               }
 
-              console.log(regex, newHash + `\n\n${'-'.repeat(40)}\n`);
-
               newContent = newContent.replace(regex, (_match, p1, p2, _p3, p4) => {
-                return p1 + p2 + newHash + p4;
+                return p1 + p2 + hashForHTML + p4;
               });
             }
 

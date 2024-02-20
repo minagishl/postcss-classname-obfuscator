@@ -137,3 +137,16 @@
 .hover\\:border-gray-300:hover {
   border-color: hsl(240, 5.9%, 90%);
 }
+
+.sm\\:before\\:w-\[480px\]::before {
+  width: 480px;
+}
+
+.sm\\:after\\:w-\[240px\]::after {
+  width: 240px;
+}
+
+.before\:content-\[\'\'\]:before {
+  --tw-content: '';
+  content: var(--tw-content);
+}
