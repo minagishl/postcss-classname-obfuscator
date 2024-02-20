@@ -10,7 +10,7 @@ import { Options, Regexeshtml } from './types';
 const pluginName = 'postcss-classname-obfuscator';
 const key = createHash('sha256', pluginName, 5); // 5 characters
 
-const plugin = (opt: any = {}) => {
+const plugin = (opt: Options = {}) => {
   return {
     postcssPlugin: pluginName,
     async Once(root: any) {
