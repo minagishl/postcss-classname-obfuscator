@@ -4,6 +4,7 @@ const { test } = require('node:test');
 const fs = require('fs');
 const path = require('path');
 
+// swc is not working properly so npm run build.
 const plugin = require('./dist');
 
 const options = {
