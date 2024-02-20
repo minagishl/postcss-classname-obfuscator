@@ -52,7 +52,14 @@ export function saveFile(output: string, mapping: Record<string, string>): void 
     fs.mkdirSync(dir, { recursive: true });
   }
 
-  fs.writeFile(outputPath, JSON.stringify(mapping, null, 2), (err) => {
+  const sortedMapping: Record<string, string> = Object.keys(mapping)
+    .sort()
+    .reduce((obj: Record<string, string>, key: string) => {
+      obj[key] = mapping[key];
+      return obj;
+    }, {});
+
+  fs.writeFile(outputPath, JSON.stringify(sortedMapping, null, 2), (err) => {
     if (err) throw err;
   });
 }
