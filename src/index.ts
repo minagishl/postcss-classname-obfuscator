@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { getFiles, saveFile } from './utils/fileUtils';
+import { getFiles, saveFile, loadFile } from './utils/fileUtils';
 import createHash from './utils/createHash';
 import replaceSymbolicCharacter from './utils/replaceSymbolicCharacter';
 import reverseReplaceSymbolicCharacter from './utils/reverseReplaceSymbolicCharacter';
@@ -15,7 +15,7 @@ const plugin = (opt: Options = {}) => {
     postcssPlugin: pluginName,
     async Once(root: any) {
       // mapping contains classes for css
-      const mapping: { [key: string]: string } = {};
+      let mapping: { [key: string]: string } = {};
       const options: Options = opt;
       const maxLength: number = 16;
 
@@ -30,12 +30,18 @@ const plugin = (opt: Options = {}) => {
       const output = options.output || '';
       const inspect = options.inspect || false;
       const directory = options.directory || '';
+      const inputJson = options.inputJson || '';
       const ignoreRegex = options.ignoreRegex || [];
       const hashAlgorithm = options.hashAlgorithm || 'sha256';
       const outputBuildID = options.outputBuildID || false;
       const inspectDirectory = options.inspectDirectory || { input: '', output: '' };
       const preRun = options.preRun || (() => Promise.resolve());
       const callback = options.callback || function () {};
+
+      // Load inputJson
+      if (inputJson) {
+        mapping = loadFile(inputJson);
+      }
 
       // Validate options
       if (length > maxLength) {

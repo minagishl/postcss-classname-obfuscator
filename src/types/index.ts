@@ -9,6 +9,7 @@ export type Options = {
   output?: string;
   inspect?: boolean; // No description in readme.md
   directory?: string;
+  inputJson?: string;
   ignoreRegex?: string[];
   hashAlgorithm?: string;
   outputBuildID?: boolean; // No description in readme.md

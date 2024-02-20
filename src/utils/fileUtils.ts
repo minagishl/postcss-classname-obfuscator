@@ -56,3 +56,24 @@ export function saveFile(output: string, mapping: Record<string, string>): void 
     if (err) throw err;
   });
 }
+
+/**
+ * Loads a file and returns its content as a JSON object.
+ * If the file does not exist, an empty object is returned.
+ * @param filePath - The path to the file to be loaded.
+ * @returns The content of the file as a JSON object.
+ */
+export function loadFile(filePath: string): Record<string, string> {
+  let loadPath = path.join(process.cwd(), filePath);
+
+  if (!path.basename(loadPath).endsWith('.json')) {
+    loadPath += loadPath.endsWith('/') ? 'main.json' : '/main.json';
+  }
+
+  if (fs.existsSync(loadPath)) {
+    const data = fs.readFileSync(loadPath, 'utf8');
+    return JSON.parse(data);
+  } else {
+    return {};
+  }
+}
