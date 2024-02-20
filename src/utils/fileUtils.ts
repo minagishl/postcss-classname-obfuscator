@@ -27,6 +27,14 @@ export async function getFiles(dirPath: string, result: string[] = []) {
   }
 }
 
+/**
+ * Saves the mapping object as a JSON file at the specified output path.
+ * If the output path does not end with '.json', it appends '/main.json' to the path.
+ * If the directory of the output path does not exist, it creates the directory.
+ *
+ * @param output - The output path where the JSON file will be saved.
+ * @param mapping - The mapping object to be saved as a JSON file.
+ */
 export function saveFile(output: string, mapping: Record<string, string>): void {
   let outputPath = path.join(process.cwd(), output);
 
