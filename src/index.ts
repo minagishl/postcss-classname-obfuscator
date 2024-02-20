@@ -166,25 +166,21 @@ const plugin = (opt: any = {}) => {
           try {
             // regular expression
             let content = fs.readFileSync(file, 'utf8');
-            const contentRegex = new RegExp(`(class=['"]|className:\\s*['"])(.*?)(['"])`, 'g');
-            content = content.replace(contentRegex, (_match, p1, p2, p3) => {
-              return (p1 + replaceSymbolicCharacter(p2, key) + p3).replace('s*', '\\s*');
+            const contentRegex = new RegExp(`(class=|className:\\s*)(['"])(.*?)(\\2)`, 'g');
+            content = content.replace(contentRegex, (_match, p1, p2, p3, p4) => {
+              return (p1 + p2 + replaceSymbolicCharacter(p3, key) + p4).replace('s*', '\\s*');
             });
 
             let newContent = content;
 
             for (const { regex, hashForHTML } of regexeshtml) {
-              if (String(regex).includes('before!')) {
-                console.log(newContent, regex, hashForHTML + `\n\n${'-'.repeat(40)}\n`);
-              }
-
               newContent = newContent.replace(regex, (_match, p1, p2, _p3, p4) => {
                 return p1 + p2 + hashForHTML + p4;
               });
             }
 
-            newContent = newContent.replace(contentRegex, (_match, p1, p2, p3) => {
-              return (p1 + reverseReplaceSymbolicCharacter(p2, key) + p3).replace('s*', '\\s*');
+            newContent = newContent.replace(contentRegex, (_match, p1, p2, p3, p4) => {
+              return (p1 + p2 + reverseReplaceSymbolicCharacter(p3, key) + p4).replace('s*', '\\s*');
             });
 
             if (inspectFileMode) {

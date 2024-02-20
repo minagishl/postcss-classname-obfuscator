@@ -2,6 +2,14 @@
 
 All changes to this project will be noted here.
 
+## [1.1.0] - 2024-02-20
+
+official release
+
+### Revision
+
+- Fixed an issue that prevented it from working properly.
+
 ## [1.0.8] - 2024-01-31
 
 Forgot to delete console.log for development
@@ -69,3 +77,6 @@ Optional features for this plug-in have been added
 [1.0.4]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.4
 [1.0.5]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.5
 [1.0.6]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.6
+[1.0.7]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.7
+[1.0.8]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.8
+[1.1.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.1.0
