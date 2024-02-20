@@ -2,7 +2,7 @@
 
 This PostCSS plugin replaces CSS class names with hard-to-guess characters.
 
-> It may not work properly if the `.next` folder exists.   
+> It may not work properly if the `.next` folder exists.
 > Demo Site: https://postcss-classname-obfuscator-demo.vercel.app/
 
 ```css
@@ -55,7 +55,7 @@ module.exports = {
 
 | Option          | Type                | Default                 | Description                                                           |
 | --------------- | ------------------- | ----------------------- | --------------------------------------------------------------------- |
-| [new] type      | string              | "nextjs"                | "nextjs" - Application-specific directories Only supported by Next.js |
+| type            | string              | "nextjs"                | "nextjs" - Application-specific directories Only supported by Next.js |
 | enable          | boolean             | true                    | Enable or disable the obfuscation.                                    |
 | length          | number              | 6                       | Character length (max. 32 characters)length.                          |
 | method          | string              | "random"                | "random" or "none" obfuscation method for classes.                    |
@@ -63,7 +63,8 @@ module.exports = {
 | suffix          | string              | ""                      | Suffix for custom properties.                                         |
 | ignore          | string[]            | []                      | Array of custom properties to ignore.                                 |
 | output          | string              | ""                      | Obfuscated property list json file output destination                 |
-| [new] directory | string              | ""                      | Directory to replace obfuscated class names                           |
+| directory       | string              | ""                      | Directory to replace obfuscated class names                           |
+| [new] inputJson | string              | ""                      | The json output by output is available.                               |
 | ignoreRegex     | string[]            | []                      | Regex to ignore.                                                      |
 | hashAlgorithm   | string              | "sha256"                | Hash algorithm for obfuscation.                                       |
 | preRun          | () => Promise<void> | () => Promise.resolve() | What to do before running the plugin                                  |
