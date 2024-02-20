@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import getFiles from './utils/getFiles';
+import { getFiles, saveFile } from './utils/fileUtils';
 import createHash from './utils/createHash';
 import replaceSymbolicCharacter from './utils/replaceSymbolicCharacter';
 import reverseReplaceSymbolicCharacter from './utils/reverseReplaceSymbolicCharacter';
@@ -89,27 +89,7 @@ const plugin = (opt: Options = {}) => {
       });
 
       // Write mapping to file
-      if (output) {
-        let outputPath = path.join(process.cwd(), output);
-
-        // Check if outputPath ends with a .json file
-        if (!path.basename(outputPath).endsWith('.json')) {
-          // If outputPath ends with '/', append 'main.json'. Otherwise, append '/main.json'
-          outputPath += outputPath.endsWith('/') ? 'main.json' : '/main.json';
-        }
-
-        // Get the directory of outputPath
-        const dir = path.dirname(outputPath);
-
-        // If the directory does not exist, create it
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir, { recursive: true });
-        }
-
-        fs.writeFile(outputPath, JSON.stringify(mapping, null, 2), (err) => {
-          if (err) throw err;
-        });
-      }
+      if (output) saveFile(output, mapping);
 
       // Compile regular expressions outside of the loop
       const regexes = Object.keys(mapping).map((original) => ({
