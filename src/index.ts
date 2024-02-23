@@ -2,8 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getFiles, saveFile, loadFile } from './utils/fileUtils';
 import createHash from './utils/createHash';
-import replaceSymbolicCharacter from './utils/replaceSymbolicCharacter';
-import reverseReplaceSymbolicCharacter from './utils/reverseReplaceSymbolicCharacter';
+import { replaceSymbolicCharacter, reverseReplaceSymbolicCharacter } from './utils/symbolicCharacterReplacer';
 import { removePseudoClasses, addPseudoClasses } from './utils/pseudoClasses';
 import { Options, Regexeshtml } from './types';
 
