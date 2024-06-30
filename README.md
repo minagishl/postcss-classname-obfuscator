@@ -2,7 +2,7 @@
 
 This PostCSS plugin replaces CSS class names with hard-to-guess characters.
 
-> The `.next folder may not work properly if present.  
+> The `.next` folder may not work properly if present.  
 > We are currently checking for bugs. Please let us know as soon as you figure out how to reproduce the bug.  
 > Demo site: https://postcss-classname-obfuscator-demo.vercel.app/  
 > Demo repository: https://github.com/minagishl/postcss-classname-obfuscator-demo
