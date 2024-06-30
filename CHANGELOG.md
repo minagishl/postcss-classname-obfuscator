@@ -2,6 +2,12 @@
 
 All changes to this project will be noted here.
 
+## [1.3.0] - 2024-06-30
+
+### Changed
+
+Refactoring to improve code maintainability
+
 ## [1.2.0] - 2024-02-20
 
 Added new `inputJson` to address the issue of CSS not building correctly in web applications such as Next.js
@@ -89,3 +95,4 @@ Optional features for this plug-in have been added
 [1.0.8]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.0.8
 [1.1.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.1.0
 [1.2.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.2.0
+[1.3.0]: https://www.npmjs.com/package/postcss-classname-obfuscator/v/1.3.0
