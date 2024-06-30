@@ -14,3 +14,4 @@ tsconfig.json
 src/
 test/
 .DS_Store
+screenshot.png
